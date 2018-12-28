@@ -1,0 +1,5 @@
+usdex-qt usr/bin
+share/pixmaps/undead32.xpm usr/share/pixmaps
+share/pixmaps/undead80.xpm usr/share/pixmaps
+debian/usdex-qt.desktop usr/share/applications
+debian/usdex-qt.protocol usr/share/kde4/services/

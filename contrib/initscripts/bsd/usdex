@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# PROVIDE: usdex
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# usdex_enable (bool): Set to NO by default. Set this variable to YES if you want to enable usdex service.
+# usdex_config (path): Set to /usr/local/etc/usdex.conf by default.
+# usdex_user:  The user account usdex daemon runs as. It uses 'root' user by default.
+# usdex_group: The group account usdex daemon runs as. It uses 'wheel' group by default.
+# usdex_datadir (str): Default to "/var/db/usdex". Base data directory.
+
+. /etc/rc.subr
+
+name=usdex
+rcvar=usdex_enable
+
+: ${usdex_enable:=NO}
+: ${usdex_config=/usr/local/etc/usdex.conf}
+: ${usdex_datadir=/var/db/usdex}
+: ${usdex_user="root"}
+: ${usdex_group="wheel"}
+
+required_files=${usdex_config}
+command=/usr/local/bin/usdexd
+usdex_chdir=${usdex_datadir}
+pidfile="${usdex_datadir}/usdexd.pid"
+stop_cmd=usdex_stop
+command_args="-conf=${usdex_config} -datadir=${usdex_datadir} -daemon -pid=${pidfile}"
+start_precmd="${name}_prestart"
+
+usdex_create_datadir()
+{
+	echo "Creating data directory"
+	eval mkdir -p ${usdex_datadir}
+	[ $? -eq 0 ] && chown -R ${usdex_user}:${usdex_group} ${usdex_datadir}
+}
+
+usdex_prestart()
+{
+	if [ ! -d "${usdex_datadir}/." ]; then
+		usdex_create_datadir || return 1
+	fi
+}
+
+usdex_requirepidfile()
+{
+	if [ ! "0`check_pidfile ${pidfile} ${command}`" -gt 1 ]; then
+		echo "${name} not running? (check $pidfile)."
+		exit 1
+	fi
+}
+
+usdex_stop()
+{
+    usdex_requirepidfile
+
+	echo "Stopping ${name}."
+	eval ${command} -conf=${usdex_config} -datadir=${usdex_datadir} stop
+	wait_for_pids ${rc_pid}
+}
+
+load_rc_config $name
+run_rc_command "$1"

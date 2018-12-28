@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=usdex
+Comment=USDEX P2P Cryptocurrency
+Exec=/usr/bin/usdex-qt
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/undead80.xpm
+MimeType=x-scheme-handler/usdex;
+Categories=Office;
+Name[en_US]=usdex-qt.desktop.desktop

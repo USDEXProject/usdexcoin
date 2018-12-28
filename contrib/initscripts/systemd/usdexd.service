@@ -1,0 +1,11 @@
+[Unit]
+Description=usdex daemon serivce
+After=network.target
+
+[Service]
+Type=simple
+User=usdex
+ExecStart=/opt/usdex/usdexd
+
+[Install]
+WantedBy=multi-user.target

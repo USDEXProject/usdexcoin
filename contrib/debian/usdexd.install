@@ -1,0 +1,2 @@
+debian/bin/usdexd usr/bin
+src/usdexd usr/lib/usdex
